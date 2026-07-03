@@ -3,231 +3,346 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tic Tac Toe vs Smart Bot</title>
+<title>TIC TAC TOE WITH AJ</title>
 
 <style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+}
+
 body{
-    font-family: Arial, sans-serif;
-    background:#f5f5f5;
+    background:#050816;
+    color:white;
     display:flex;
-    flex-direction:column;
     justify-content:center;
     align-items:center;
-    height:100vh;
-    margin:0;
+    min-height:100vh;
+    padding:20px;
+}
+
+.container{
+    width:100%;
+    max-width:900px;
+    text-align:center;
 }
 
 h1{
+    font-size:3rem;
     margin-bottom:10px;
+    color:#00ffff;
+    text-shadow:0 0 20px #00ffff;
 }
 
 #status{
-    font-size:20px;
-    font-weight:bold;
+    font-size:1.4rem;
     margin-bottom:15px;
+    color:#ff4dff;
+    text-shadow:0 0 10px #ff4dff;
+}
+
+.scoreboard{
+    display:flex;
+    justify-content:center;
+    gap:20px;
+    flex-wrap:wrap;
+    margin-bottom:20px;
+}
+
+.score{
+    background:#111827;
+    padding:12px 20px;
+    border-radius:10px;
+    border:2px solid #00ffff;
+    box-shadow:0 0 15px #00ffff;
 }
 
 .board{
+    margin:auto;
     display:grid;
-    grid-template-columns:repeat(3,100px);
-    grid-template-rows:repeat(3,100px);
-    gap:5px;
+    grid-template-columns:repeat(3,110px);
+    grid-template-rows:repeat(3,110px);
+    gap:8px;
 }
 
 .cell{
-    width:100px;
-    height:100px;
-    background:white;
-    border:2px solid #333;
+    background:#111827;
+    border:2px solid #00ffff;
     display:flex;
     justify-content:center;
     align-items:center;
-    font-size:50px;
+    font-size:4rem;
     cursor:pointer;
-    user-select:none;
+    transition:0.3s;
+    box-shadow:0 0 15px #00ffff;
 }
 
 .cell:hover{
-    background:#eeeeee;
+    transform:scale(1.05);
 }
 
-#reset{
-    margin-top:15px;
-    padding:10px 20px;
-    font-size:16px;
-    cursor:pointer;
+.x{
+    color:#00ffff;
+    text-shadow:0 0 15px #00ffff;
 }
+
+.o{
+    color:#ff4dff;
+    text-shadow:0 0 15px #ff4dff;
+}
+
+button{
+    margin-top:20px;
+    padding:12px 25px;
+    border:none;
+    border-radius:10px;
+    background:#ff4dff;
+    color:white;
+    font-size:1rem;
+    cursor:pointer;
+    box-shadow:0 0 15px #ff4dff;
+}
+
+button:hover{
+    transform:scale(1.05);
+}
+
+.supporters{
+    margin-top:35px;
+}
+
+.supporters h2{
+    color:#ff4dff;
+    margin-bottom:15px;
+}
+
+.supporter-card{
+    width:250px;
+    margin:10px auto;
+    padding:12px;
+    border:2px solid #00ffff;
+    border-radius:10px;
+    background:#111827;
+    box-shadow:0 0 12px #00ffff;
+}
+
+.footer{
+    margin-top:25px;
+    color:#aaa;
+}
+
+@media(max-width:600px){
+
+    h1{
+        font-size:2rem;
+    }
+
+    .board{
+        grid-template-columns:repeat(3,90px);
+        grid-template-rows:repeat(3,90px);
+    }
+
+    .cell{
+        font-size:3rem;
+    }
+}
+
 </style>
 </head>
 
 <body>
 
-<h1>Tic Tac Toe vs Smart Bot</h1>
+<div class="container">
+
+<h1>🎮 TIC TAC TOE WITH AJ</h1>
 
 <div id="status">Your Turn (X)</div>
 
-<div class="board">
-    <div class="cell" data-index="0"></div>
-    <div class="cell" data-index="1"></div>
-    <div class="cell" data-index="2"></div>
-
-    <div class="cell" data-index="3"></div>
-    <div class="cell" data-index="4"></div>
-    <div class="cell" data-index="5"></div>
-
-    <div class="cell" data-index="6"></div>
-    <div class="cell" data-index="7"></div>
-    <div class="cell" data-index="8"></div>
+<div class="scoreboard">
+    <div class="score">🏆 Wins: <span id="wins">0</span></div>
+    <div class="score">🤖 Bot: <span id="losses">0</span></div>
+    <div class="score">🤝 Draws: <span id="draws">0</span></div>
 </div>
 
-<button id="reset">Reset Game</button>
+<div class="board">
+
+<div class="cell" data-index="0"></div>
+<div class="cell" data-index="1"></div>
+<div class="cell" data-index="2"></div>
+
+<div class="cell" data-index="3"></div>
+<div class="cell" data-index="4"></div>
+<div class="cell" data-index="5"></div>
+
+<div class="cell" data-index="6"></div>
+<div class="cell" data-index="7"></div>
+<div class="cell" data-index="8"></div>
+
+</div>
+
+<button onclick="resetGame()">🔄 Reset Game</button>
+
+<div class="supporters">
+    <h2>💜 Supporters</h2>
+
+    <div class="supporter-card">⭐ AJ</div>
+    <div class="supporter-card">⭐ Ephraim</div>
+    <div class="supporter-card">⭐ Aalok</div>
+</div>
+
+<div class="footer">
+    Made by AJ 🚀
+</div>
+
+</div>
 
 <script>
 
-const cells = document.querySelectorAll(".cell");
-const statusText = document.getElementById("status");
-const resetButton = document.getElementById("reset");
+const cells=document.querySelectorAll(".cell");
+const statusText=document.getElementById("status");
 
-let board = ["","","","","","","","",""];
-let gameActive = true;
+let board=["","","","","","","","",""];
+let active=true;
 
-const human = "X";
-const bot = "O";
+let wins=0;
+let losses=0;
+let draws=0;
 
-const winningPatterns = [
-    [0,1,2],
-    [3,4,5],
-    [6,7,8],
-    [0,3,6],
-    [1,4,7],
-    [2,5,8],
-    [0,4,8],
-    [2,4,6]
+const human="X";
+const bot="O";
+
+const patterns=[
+[0,1,2],
+[3,4,5],
+[6,7,8],
+[0,3,6],
+[1,4,7],
+[2,5,8],
+[0,4,8],
+[2,4,6]
 ];
 
 cells.forEach(cell=>{
-    cell.addEventListener("click",handleClick);
+    cell.addEventListener("click",clickCell);
 });
 
-resetButton.addEventListener("click",resetGame);
+function clickCell(e){
 
-function handleClick(e){
+    let index=e.target.dataset.index;
 
-    const index = e.target.dataset.index;
+    if(board[index]!=="" || !active) return;
 
-    if(board[index] !== "" || !gameActive){
-        return;
+    move(index,human);
+
+    if(active){
+        statusText.textContent="🤖 Bot Thinking...";
+        setTimeout(botMove,500);
     }
-
-    makeMove(index,human);
-
-    if(!gameActive){
-        return;
-    }
-
-    statusText.textContent = "Bot Thinking...";
-
-    setTimeout(()=>{
-        botMove();
-    },500);
 }
 
-function makeMove(index,player){
+function move(index,player){
 
-    board[index] = player;
-    cells[index].textContent = player;
+    board[index]=player;
+
+    cells[index].textContent=player;
+    cells[index].classList.add(
+        player==="X" ? "x" : "o"
+    );
 
     if(checkWin(player)){
 
-        gameActive = false;
+        active=false;
 
-        if(player === human){
-            statusText.textContent = "🎉 You Win!";
-        }else{
-            statusText.textContent = "🤖 Bot Wins!";
+        if(player===human){
+            wins++;
+            document.getElementById("wins").textContent=wins;
+            statusText.textContent="🎉 You Win!";
+        }
+        else{
+            losses++;
+            document.getElementById("losses").textContent=losses;
+            statusText.textContent="🤖 Bot Wins!";
         }
 
         return;
     }
 
-    if(board.every(cell=>cell !== "")){
-        gameActive = false;
-        statusText.textContent = "🤝 Draw!";
+    if(board.every(x=>x!=="")){
+
+        active=false;
+        draws++;
+        document.getElementById("draws").textContent=draws;
+        statusText.textContent="🤝 Draw!";
         return;
     }
 
-    if(player === human){
-        statusText.textContent = "Bot Turn (O)";
-    }else{
-        statusText.textContent = "Your Turn (X)";
-    }
+    statusText.textContent=
+        player===human
+        ? "Bot Turn (O)"
+        : "Your Turn (X)";
 }
 
 function botMove(){
 
-    if(!gameActive){
-        return;
-    }
+    let moveIndex=findWinningMove(bot);
 
-    let move = findWinningMove(bot);
+    if(moveIndex===-1)
+        moveIndex=findWinningMove(human);
 
-    if(move === -1){
-        move = findWinningMove(human);
-    }
+    if(moveIndex===-1 && board[4]==="")
+        moveIndex=4;
 
-    if(move === -1 && board[4] === ""){
-        move = 4;
-    }
+    if(moveIndex===-1){
 
-    if(move === -1){
+        const corners=[0,2,6,8]
+        .filter(i=>board[i]==="");
 
-        const corners = [0,2,6,8].filter(
-            index => board[index] === ""
-        );
+        if(corners.length>0){
 
-        if(corners.length > 0){
-            move = corners[
-                Math.floor(Math.random()*corners.length)
-            ];
+            moveIndex=
+            corners[Math.floor(
+            Math.random()*corners.length)];
         }
     }
 
-    if(move === -1){
+    if(moveIndex===-1){
 
-        const emptyCells = board
-            .map((value,index)=>
-                value === "" ? index : null
-            )
-            .filter(index=>index !== null);
+        const empty=board
+        .map((v,i)=>v===""?i:null)
+        .filter(v=>v!==null);
 
-        move = emptyCells[
-            Math.floor(Math.random()*emptyCells.length)
-        ];
+        moveIndex=
+        empty[Math.floor(
+        Math.random()*empty.length)];
     }
 
-    makeMove(move,bot);
+    move(moveIndex,bot);
 }
 
 function findWinningMove(player){
 
-    for(let pattern of winningPatterns){
+    for(let p of patterns){
 
-        const [a,b,c] = pattern;
+        let [a,b,c]=p;
 
-        const values = [
+        let values=[
             board[a],
             board[b],
             board[c]
         ];
 
         if(
-            values.filter(v=>v===player).length === 2 &&
+            values.filter(v=>v===player).length===2
+            &&
             values.includes("")
         ){
 
-            if(board[a] === "") return a;
-            if(board[b] === "") return b;
-            if(board[c] === "") return c;
+            if(board[a]==="") return a;
+            if(board[b]==="") return b;
+            if(board[c]==="") return c;
         }
     }
 
@@ -236,27 +351,25 @@ function findWinningMove(player){
 
 function checkWin(player){
 
-    return winningPatterns.some(pattern=>{
-
-        const [a,b,c] = pattern;
-
-        return (
-            board[a] === player &&
-            board[b] === player &&
-            board[c] === player
-        );
-    });
+    return patterns.some(p=>
+        board[p[0]]===player &&
+        board[p[1]]===player &&
+        board[p[2]]===player
+    );
 }
 
 function resetGame(){
 
-    board = ["","","","","","","","",""];
-    gameActive = true;
+    board=["","","","","","","","",""];
+    active=true;
 
-    statusText.textContent = "Your Turn (X)";
+    statusText.textContent=
+    "Your Turn (X)";
 
     cells.forEach(cell=>{
-        cell.textContent = "";
+        cell.textContent="";
+        cell.classList.remove("x");
+        cell.classList.remove("o");
     });
 }
 
