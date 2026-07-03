@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tic Tac Toe vs Smart Bot</title>
+
+<style>
+body{
+    font-family: Arial, sans-serif;
+    background:#f5f5f5;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+    margin:0;
+}
+
+h1{
+    margin-bottom:10px;
+}
+
+#status{
+    font-size:20px;
+    font-weight:bold;
+    margin-bottom:15px;
+}
+
+.board{
+    display:grid;
+    grid-template-columns:repeat(3,100px);
+    grid-template-rows:repeat(3,100px);
+    gap:5px;
+}
+
+.cell{
+    width:100px;
+    height:100px;
+    background:white;
+    border:2px solid #333;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:50px;
+    cursor:pointer;
+    user-select:none;
+}
+
+.cell:hover{
+    background:#eeeeee;
+}
+
+#reset{
+    margin-top:15px;
+    padding:10px 20px;
+    font-size:16px;
+    cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<h1>Tic Tac Toe vs Smart Bot</h1>
+
+<div id="status">Your Turn (X)</div>
+
+<div class="board">
+    <div class="cell" data-index="0"></div>
+    <div class="cell" data-index="1"></div>
+    <div class="cell" data-index="2"></div>
+
+    <div class="cell" data-index="3"></div>
+    <div class="cell" data-index="4"></div>
+    <div class="cell" data-index="5"></div>
+
+    <div class="cell" data-index="6"></div>
+    <div class="cell" data-index="7"></div>
+    <div class="cell" data-index="8"></div>
+</div>
+
+<button id="reset">Reset Game</button>
+
+<script>
+
+const cells = document.querySelectorAll(".cell");
+const statusText = document.getElementById("status");
+const resetButton = document.getElementById("reset");
+
+let board = ["","","","","","","","",""];
+let gameActive = true;
+
+const human = "X";
+const bot = "O";
+
+const winningPatterns = [
+    [0,1,2],
+    [3,4,5],
+    [6,7,8],
+    [0,3,6],
+    [1,4,7],
+    [2,5,8],
+    [0,4,8],
+    [2,4,6]
+];
+
+cells.forEach(cell=>{
+    cell.addEventListener("click",handleClick);
+});
+
+resetButton.addEventListener("click",resetGame);
+
+function handleClick(e){
+
+    const index = e.target.dataset.index;
+
+    if(board[index] !== "" || !gameActive){
+        return;
+    }
+
+    makeMove(index,human);
+
+    if(!gameActive){
+        return;
+    }
+
+    statusText.textContent = "Bot Thinking...";
+
+    setTimeout(()=>{
+        botMove();
+    },500);
+}
+
+function makeMove(index,player){
+
+    board[index] = player;
+    cells[index].textContent = player;
+
+    if(checkWin(player)){
+
+        gameActive = false;
+
+        if(player === human){
+            statusText.textContent = "🎉 You Win!";
+        }else{
+            statusText.textContent = "🤖 Bot Wins!";
+        }
+
+        return;
+    }
+
+    if(board.every(cell=>cell !== "")){
+        gameActive = false;
+        statusText.textContent = "🤝 Draw!";
+        return;
+    }
+
+    if(player === human){
+        statusText.textContent = "Bot Turn (O)";
+    }else{
+        statusText.textContent = "Your Turn (X)";
+    }
+}
+
+function botMove(){
+
+    if(!gameActive){
+        return;
+    }
+
+    let move = findWinningMove(bot);
+
+    if(move === -1){
+        move = findWinningMove(human);
+    }
+
+    if(move === -1 && board[4] === ""){
+        move = 4;
+    }
+
+    if(move === -1){
+
+        const corners = [0,2,6,8].filter(
+            index => board[index] === ""
+        );
+
+        if(corners.length > 0){
+            move = corners[
+                Math.floor(Math.random()*corners.length)
+            ];
+        }
+    }
+
+    if(move === -1){
+
+        const emptyCells = board
+            .map((value,index)=>
+                value === "" ? index : null
+            )
+            .filter(index=>index !== null);
+
+        move = emptyCells[
+            Math.floor(Math.random()*emptyCells.length)
+        ];
+    }
+
+    makeMove(move,bot);
+}
+
+function findWinningMove(player){
+
+    for(let pattern of winningPatterns){
+
+        const [a,b,c] = pattern;
+
+        const values = [
+            board[a],
+            board[b],
+            board[c]
+        ];
+
+        if(
+            values.filter(v=>v===player).length === 2 &&
+            values.includes("")
+        ){
+
+            if(board[a] === "") return a;
+            if(board[b] === "") return b;
+            if(board[c] === "") return c;
+        }
+    }
+
+    return -1;
+}
+
+function checkWin(player){
+
+    return winningPatterns.some(pattern=>{
+
+        const [a,b,c] = pattern;
+
+        return (
+            board[a] === player &&
+            board[b] === player &&
+            board[c] === player
+        );
+    });
+}
+
+function resetGame(){
+
+    board = ["","","","","","","","",""];
+    gameActive = true;
+
+    statusText.textContent = "Your Turn (X)";
+
+    cells.forEach(cell=>{
+        cell.textContent = "";
+    });
+}
+
+</script>
+
+</body>
+</html>
